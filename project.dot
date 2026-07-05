@@ -1,0 +1,69 @@
+digraph G {
+    graph [rankdir=TB, ranksep=0.5, layout=dot, clusterrank="local"];
+    subgraph "cluster_G" {
+
+        graph [style="filled,rounded", fillcolor="#80808018", label=""];
+        "action" [label="action\n(action.py)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="0", tooltip="action\naction.py"];
+        "base" [label="base\n(base.py)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="1", tooltip="base\nbase.py"];
+        "encounter_manager" [label="encounter_manager\n(encounter_manager.py)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="2", tooltip="encounter_manager\nencounter_manager.py"];
+        "entity" [label="entity\n(entity.py)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="3", tooltip="entity\nentity.py"];
+        "game_manager" [label="game_manager\n(game_manager.py)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="4", tooltip="game_manager\ngame_manager.py"];
+        "test" [label="test\n(test.py)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="5", tooltip="test\ntest.py"];
+        subgraph "cluster_instances" {
+
+            graph [style="filled,rounded", fillcolor="#80808018", label="instances"];
+            "instances__effects" [label="effects\n(module in instances)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="6", tooltip="instances.effects\nmodule in instances"];
+            "instances__entities" [label="entities\n(module in instances)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="6", tooltip="instances.entities\nmodule in instances"];
+            "instances__others" [label="others\n(module in instances)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="6", tooltip="instances.others\nmodule in instances"];
+            "instances__spells" [label="spells\n(module in instances)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="6", tooltip="instances.spells\nmodule in instances"];
+            "instances__weapons" [label="weapons\n(module in instances)", style="filled", fillcolor="#ffffffb2", fontcolor="#000000", group="6", tooltip="instances.weapons\nmodule in instances"];
+        }
+    }
+        "action" -> "base" [style="solid",  color="#000000"];
+        "action" -> "entity" [style="solid",  color="#000000"];
+        "encounter_manager" -> "action" [style="solid",  color="#000000"];
+        "encounter_manager" -> "base" [style="solid",  color="#000000"];
+        "encounter_manager" -> "entity" [style="solid",  color="#000000"];
+        "encounter_manager" -> "instances__entities" [style="solid",  color="#000000"];
+        "entity" -> "action" [style="solid",  color="#000000"];
+        "entity" -> "base" [style="solid",  color="#000000"];
+        "entity" -> "encounter_manager" [style="solid",  color="#000000"];
+        "game_manager" -> "action" [style="solid",  color="#000000"];
+        "game_manager" -> "base" [style="solid",  color="#000000"];
+        "game_manager" -> "encounter_manager" [style="solid",  color="#000000"];
+        "game_manager" -> "entity" [style="solid",  color="#000000"];
+        "instances__effects" -> "action" [style="solid",  color="#000000"];
+        "instances__effects" -> "base" [style="solid",  color="#000000"];
+        "instances__effects" -> "encounter_manager" [style="solid",  color="#000000"];
+        "instances__effects" -> "entity" [style="solid",  color="#000000"];
+        "instances__entities" -> "action" [style="solid",  color="#000000"];
+        "instances__entities" -> "base" [style="solid",  color="#000000"];
+        "instances__entities" -> "encounter_manager" [style="solid",  color="#000000"];
+        "instances__entities" -> "entity" [style="solid",  color="#000000"];
+        "instances__entities" -> "instances__effects" [style="solid",  color="#000000"];
+        "instances__entities" -> "instances__others" [style="solid",  color="#000000"];
+        "instances__entities" -> "instances__spells" [style="solid",  color="#000000"];
+        "instances__entities" -> "instances__weapons" [style="solid",  color="#000000"];
+        "instances__others" -> "action" [style="solid",  color="#000000"];
+        "instances__others" -> "base" [style="solid",  color="#000000"];
+        "instances__others" -> "entity" [style="solid",  color="#000000"];
+        "instances__others" -> "instances__effects" [style="solid",  color="#000000"];
+        "instances__spells" -> "action" [style="solid",  color="#000000"];
+        "instances__spells" -> "base" [style="solid",  color="#000000"];
+        "instances__spells" -> "entity" [style="solid",  color="#000000"];
+        "instances__spells" -> "instances__effects" [style="solid",  color="#000000"];
+        "instances__weapons" -> "action" [style="solid",  color="#000000"];
+        "instances__weapons" -> "base" [style="solid",  color="#000000"];
+        "instances__weapons" -> "entity" [style="solid",  color="#000000"];
+        "instances__weapons" -> "instances__effects" [style="solid",  color="#000000"];
+        "test" -> "action" [style="solid",  color="#000000"];
+        "test" -> "base" [style="solid",  color="#000000"];
+        "test" -> "encounter_manager" [style="solid",  color="#000000"];
+        "test" -> "entity" [style="solid",  color="#000000"];
+        "test" -> "game_manager" [style="solid",  color="#000000"];
+        "test" -> "instances__effects" [style="solid",  color="#000000"];
+        "test" -> "instances__entities" [style="solid",  color="#000000"];
+        "test" -> "instances__others" [style="solid",  color="#000000"];
+        "test" -> "instances__spells" [style="solid",  color="#000000"];
+        "test" -> "instances__weapons" [style="solid",  color="#000000"];
+    }
