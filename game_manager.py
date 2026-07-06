@@ -1,20 +1,20 @@
 from __future__ import annotations # woah time travel
 
-from base import Action_Type, Attack_Type
-from action import Action, Attack, Effect
-from entity import Entity
-from encounter_manager import Encounter
+from encounter_manager import EncounterManager
 
 class GameManager:
     _instance: GameManager | None = None
+    
+    encounter_manager: EncounterManager
 
     difficulty: int # the difficulty
 
     def __init__(self):
         self.players = []
-        self.difficulty = int(input("Difficulty: (1/2/3)")) # placeholder
+        self.encounter_manager = EncounterManager.instance()
 
-        
+        self.difficulty = int(input("Difficulty: (1/2/3)"))
+
 
     def main(self):
         pass

@@ -1,13 +1,13 @@
 from __future__ import annotations # woah time travel
+from typing import TYPE_CHECKING
 
 from base import Action_Type, Attack_Type
 from action import Action, Attack, Effect
 from instances.effects import *
-from entity import Entity
 
-from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from entities import Summoned_Zombie, Summoned_Skelly
+    from entity import Entity
+
 
 class Firebolt(Action):
 
@@ -200,15 +200,17 @@ class Good(Action): # should probably be player-only, as player should be immune
         if isinstance(self.target_effects[0], Realign):
             self.target_effects[0].level += 1
 
-class SummonUndead(Action):
-    def __init__(self, level: int):
+class Summon(Action):
+
+    # summonee's level is the spell's
+    def __init__(self, summonee: Entity):
         super().__init__(
             name = "Summon Undead",
-            level = level,
+            level = summonee.level,
             action_type = Action_Type.SPELL,
             attacks = [],
             target_effects = [],
-            self_effects = [Summon(random.choice([Summoned_Zombie(level), Summoned_Skelly(level)]))],
+            self_effects = [SummonEffect(summonee)],
             mana_cost = 20,
             max_level = -1,
             upgrades = [] 
@@ -216,7 +218,7 @@ class SummonUndead(Action):
 
     def level_up(self):
         self.level += 1
-        if isinstance(self.self_effects[0], Summon):
+        if isinstance(self.self_effects[0], SummonEffect):
             self.self_effects[0].summonee.level_up()
 
 class HealSelf(Action): # should probably be player-only, as player should be immune at least

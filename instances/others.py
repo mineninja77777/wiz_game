@@ -14,7 +14,7 @@ class Rest(Action): # regen some mana
             action_type = Action_Type.OTHER,
             attacks = [],
             target_effects = [],
-            self_effects = [Heal(level * 5), Recover_Mana(level * 2)],
+            self_effects = [Heal(level * 5), RecoverMana(level * 2)],
             mana_cost = 0,
             max_level = -1,
             upgrades = [] 

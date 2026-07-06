@@ -6,7 +6,9 @@ import random
 from base import *
 from action import enough_mana, Action, Effect, Attack
 
-from encounter_manager import EncounterManager
+
+if TYPE_CHECKING:
+    from context import EncounterContext
 
 class Entity:
     name: str
@@ -35,23 +37,22 @@ class Entity:
 
         self.active_effects = []
 
-    def turn(self):
+    def turn(self, context: EncounterContext):
         blocked = False
         for effect in self.active_effects:
-            if effect.blocks_turn(self):
+            if effect.blocks_turn(self, context):
                 blocked = True
 
         if not blocked:
             for _ in range(self.stats.turns):
-                action = self.get_action()
+                action = self.get_action(context)
                 if action:
-                    self.execute_action(*action)
+                    self.execute_action(*action, context)
         
-        self.tick_effects()
+        self.tick_effects(context)
 
-    def get_action(self) -> tuple[Action, list[Entity], list[Entity]] | None:
+    def get_action(self, context: EncounterContext) -> tuple[Action, list[Entity], list[Entity]] | None:
         # returns action, primary targets, other potential targets
-        encounter: EncounterManager = EncounterManager.instance()
 
         # literally just pick random
         
@@ -62,9 +63,9 @@ class Entity:
         # filter targets so that bad things happen to enemies (aka aligned differently)
         
         if action.attacks[0].dmg > 0:
-            targets: list[Entity] = encounter.get_aligned(not self.aligned) # target enemies
+            targets: list[Entity] = context.get_aligned(not self.aligned) # target enemies
         else:
-            targets: list[Entity] = encounter.get_aligned(self.aligned) # target allies
+            targets: list[Entity] = context.get_aligned(self.aligned) # target allies
         
         if len(targets) == 0: return None
         # choose targets
@@ -74,18 +75,18 @@ class Entity:
         return action, primary_targets, targets
 
     # worry about returning info later # targets should be all entities of opposite alignment # or same if it is a nice action
-    def execute_action(self, action: Action, primary_targets: list[Entity], targets: list[Entity]): #
+    def execute_action(self, action: Action, primary_targets: list[Entity], targets: list[Entity], context: EncounterContext): #
         if len(action.attacks) != len(primary_targets):
             raise Exception("uhhhhhhhh no bueno innnit blud")
         
         for i in range(len(action.attacks)):
             if primary_targets[i].stats.dodge > random.random():
                 # resolve primary target
-                primary_targets[i].recieve_attack(action.attacks[i])
+                primary_targets[i].recieve_attack(action.attacks[i], context)
                 
                 # resolve effects on primary target
                 for effect in action.target_effects:
-                    primary_targets[i].recieve_effect(effect)
+                    primary_targets[i].recieve_effect(effect, context)
 
             # resolve aoe
             aoe_targets = targets.copy()
@@ -93,32 +94,35 @@ class Entity:
             for target in aoe_targets[:(action.attacks[i].aoe-1)]:
                 if target.stats.dodge <= random.random(): continue # dodged
 
-                target.recieve_attack(action.attacks[i])
+                target.recieve_attack(action.attacks[i], context)
                 
                 # handle effects
                 for effect in action.target_effects:
-                    target.recieve_effect(effect)
+                    target.recieve_effect(effect, context)
             
             
         
         for effect in action.self_effects:
-            self.recieve_effect(effect)
+            self.recieve_effect(effect, context)
     
-    def recieve_attack(self, attack: Attack): # worry about returning info later
+    # enemies should only ever be damaged like this
+    def recieve_attack(self, attack: Attack, context: EncounterContext): # worry about returning info later
         damage = attack.get_damage() * self.stats.resistances[attack.dmg_type]
         self.hp -= damage
         self.hp = round(self.hp, 1) # because points float
+        if self.hp <= 0:
+            context.remove_entity(self)
 
-    def recieve_effect(self, effect: Effect):
+    def recieve_effect(self, effect: Effect, context: EncounterContext):
         self.active_effects.append(effect)
-        effect.on_apply(self)
+        effect.on_apply(self, context)
 
-    def tick_effects(self):
+    def tick_effects(self, context: EncounterContext):
         for effect in self.active_effects.copy():
-            if effect.expired(self):
-                effect.remove(self)
+            if effect.expired(self, context):
+                effect.remove(self, context)
             else:
-                effect.tick(self)
+                effect.tick(self, context)
     
     def level_up(self):
         pass

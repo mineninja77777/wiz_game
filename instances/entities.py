@@ -1,18 +1,14 @@
 from __future__ import annotations # woah time travel
 
-import math
 import random
 
-from base import *
-from action import enough_mana, Action, Effect, Attack
+from base import Attack_Type, StatBlock
+from action import enough_mana, Action
 
-from instances.effects import *
+
 from instances.weapons import *
 from instances.spells import *
 from instances.others import *
-
-
-from encounter_manager import EncounterManager
 
 from entity import Entity, Enemy
 
@@ -209,7 +205,7 @@ class Wraith(Enemy):
             "Water Elemental", 
             25,
             StatBlock(100, 0, 50, 2, Attack_Type.generate_resistances({Attack_Type.POISON: 0, Attack_Type.NECROTIC: 0, Attack_Type.BLUDGEON: 0.5, Attack_Type.SHARP: 0.5})), 
-            [ELifeDrain(10), SummonUndead(1)]
+            [ELifeDrain(10), Summon(Summoned_Skelly(1))]
         )
 
 class Chimera(Enemy):
@@ -242,7 +238,7 @@ class Mage(Enemy):
             [EssenceStaff(10), HealSelf(5), Firebolt(5), MagicMissiles(5)] # also has fireball but idk if I should add that
         )
 
-    def get_action(self) -> tuple[Action, list[Entity], list[Entity]] | None:
+    def get_action(self, context: EncounterContext) -> tuple[Action, list[Entity], list[Entity]] | None:
         if self.hp <= 20: # try find a helpful spell
             for action in self.actions:
                 if isinstance(action, HealSelf) and self.mana >= action.mana_cost:
@@ -252,10 +248,10 @@ class Mage(Enemy):
             for action in self.actions:
                 if isinstance(action, EssenceStaff) and self.mana >= action.mana_cost:
                     return action, \
-                           [random.choice(EncounterManager.instance().get_aligned(not self.aligned))], \
-                           EncounterManager.instance().get_aligned(not self.aligned)
+                           [random.choice(context.get_aligned(not self.aligned))], \
+                           context.get_aligned(not self.aligned)
 
-        return super().get_action()
+        return super().get_action(context)
     
 class MindFlayer(Enemy):
 

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import cast, overload, TYPE_CHECKING
+from dataclasses import dataclass
+from typing import overload, TYPE_CHECKING
 import random
-from time import sleep
 
 from base import Attack_Type, Action_Type
 
 if TYPE_CHECKING:
     from entity import Entity
+    from context import EncounterContext
 
 @dataclass
 class Attack:
@@ -26,20 +26,20 @@ class Attack:
 class Effect: # can be positive or negative
     name: str = "Effect"
 
-    def on_apply(self, target: "Entity"):
+    def on_apply(self, target: "Entity", context: EncounterContext):
         pass
 
-    def tick(self, target: "Entity"):
+    def tick(self, target: "Entity", context: EncounterContext):
         pass
 
-    def blocks_turn(self, target: "Entity") -> bool:
+    def blocks_turn(self, target: "Entity", context: EncounterContext) -> bool:
         return False
     
-    def expired(self, target: "Entity") -> bool:
-        self.remove(target)
+    def expired(self, target: "Entity", context: EncounterContext) -> bool:
+        self.remove(target, context)
         return True
     
-    def remove(self, target: "Entity"):
+    def remove(self, target: "Entity", context: EncounterContext):
         target.active_effects.remove(self)
 
 

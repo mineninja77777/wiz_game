@@ -1,11 +1,14 @@
-import random
+from __future__ import annotations # woah time travel
 from typing import TYPE_CHECKING
 
-from base import Attack_Type
+import random
+
+
 from action import Attack, Effect
 from entity import Entity
 
-from encounter_manager import EncounterManager
+if TYPE_CHECKING:
+    from context import EncounterContext
 
 # --------- positive -----------
 
@@ -30,7 +33,7 @@ class Heal(Effect):
         self.overheal = can_overheal
         self.percent = percent
 
-    def on_apply(self, target: Entity):
+    def on_apply(self, target: Entity, context: EncounterContext):
         if self.percent:
             target.hp += self.heal * target.stats.max_hp
         else:
@@ -39,7 +42,7 @@ class Heal(Effect):
         if target.hp > target.stats.max_hp and not self.overheal:
             target.hp = target.stats.max_hp
     
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return True
 
 
@@ -59,7 +62,7 @@ class RecoverMana(Effect):
         self.overmana = can_overcharge
         self.percent = percent
 
-    def on_apply(self, target: "Entity"):
+    def on_apply(self, target: Entity, context: EncounterContext):
         if self.percent:
             target.mana += self.mana_gain * target.stats.max_mana
         else:
@@ -68,7 +71,7 @@ class RecoverMana(Effect):
         if target.mana > target.stats.max_mana and not self.overmana:
                 target.mana = target.stats.max_mana
     
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return True
 
 
@@ -85,11 +88,11 @@ class DOT(Effect):
         self.turns_left = turns
         self.damage = damage
     
-    def tick(self, target: Entity):
+    def tick(self, target: Entity, context: EncounterContext):
         self.turns_left -= 1
-        target.recieve_attack(self.damage)
+        target.recieve_attack(self.damage, context)
     
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return self.turns_left <= 0
 
 
@@ -99,13 +102,13 @@ class Stun(Effect):
     def __init__(self, turns: int):
         self.turns_left = turns
 
-    def tick(self, target: Entity) -> None:
+    def tick(self, target: Entity, context: EncounterContext) -> None:
         self.turns_left -= 1
 
-    def blocks_turn(self, target: Entity) -> bool:
+    def blocks_turn(self, target: Entity, context: EncounterContext) -> bool:
         return True
 
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return self.turns_left <= 0
 
 class Prone(Effect):
@@ -116,19 +119,19 @@ class Prone(Effect):
     def __init__(self):
         pass
 
-    def on_apply(self, target: Entity):
+    def on_apply(self, target: Entity, context: EncounterContext):
         self.old_dodge = target.stats.dodge
         target.stats.dodge = 0
 
-    def blocks_turn(self, target: Entity) -> bool:
+    def blocks_turn(self, target: Entity, context: EncounterContext) -> bool:
         return True
 
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return True
     
-    def remove(self, target: Entity):
+    def remove(self, target: Entity, context: EncounterContext):
         target.stats.dodge = self.old_dodge
-        return super().remove(target)
+        return super().remove(target, context)
 
 
 class Realign(Effect): # works weird but yk whatever
@@ -144,25 +147,25 @@ class Realign(Effect): # works weird but yk whatever
         self.new_alignment = new_alignment
         self.old_alignment = new_alignment
     
-    def on_apply(self, target: Entity):
+    def on_apply(self, target: Entity, context: EncounterContext):
         if target.aligned != self.new_alignment:
             self.old_alignment = target.aligned
             target.aligned = self.new_alignment
 
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         if target.level > self.level:
             return True
         elif random.random() * target.level > self.level:
             return True
         return False
     
-    def remove(self, target: Entity):
+    def remove(self, target: Entity, context: EncounterContext):
         target.aligned = self.old_alignment
-        super().remove(target)
+        super().remove(target, context)
 
 
 class HPMaxReduction(Effect): # works weird but yk whatever
-    name: str = "Friend"
+    name: str = "Life Drain"
 
     reduction: float
 
@@ -170,19 +173,19 @@ class HPMaxReduction(Effect): # works weird but yk whatever
     def __init__(self, reduction: float):
         self.reduction = reduction
     
-    def on_apply(self, target: Entity):
+    def on_apply(self, target: Entity, context: EncounterContext):
         target.stats.max_hp -= self.reduction
 
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return False
 
-    def remove(self, target: Entity):
+    def remove(self, target: Entity, context: EncounterContext):
         target.stats.max_hp += self.reduction
-        super().remove(target)
+        super().remove(target, context)
 
 # --------------------------- who knows ----------------------
 
-class Summon(Effect):
+class SummonEffect(Effect):
     name: str = "Summon"
     
     summonee: Entity
@@ -190,8 +193,8 @@ class Summon(Effect):
     def __init__(self, summonee: Entity):
         self.summonee = summonee
         
-    def on_apply(self, target: Entity):
-        EncounterManager.instance().entities.append(self.summonee)
+    def on_apply(self, target: Entity, context: EncounterContext):
+        context.add_entity(self.summonee)
 
-    def expired(self, target: Entity) -> bool:
+    def expired(self, target: Entity, context: EncounterContext) -> bool:
         return True
