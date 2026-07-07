@@ -182,7 +182,7 @@ class HPMaxReduction(Effect): # works weird but yk whatever
 
 # --------------------------- who knows ----------------------
 
-class Summon(Effect):
+class SummonEffect(Effect):
     name: str = "Summon"
     
     summonee: Entity

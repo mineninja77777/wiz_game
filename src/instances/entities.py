@@ -209,7 +209,7 @@ class Wraith(Enemy):
             "Water Elemental", 
             25,
             StatBlock(100, 0, 50, 2, Attack_Type.generate_resistances({Attack_Type.POISON: 0, Attack_Type.NECROTIC: 0, Attack_Type.BLUDGEON: 0.5, Attack_Type.SHARP: 0.5})), 
-            [ELifeDrain(10), SummonUndead(1)]
+            [ELifeDrain(10), Summon(Summoned_Skelly(1))]
         )
 
 class Chimera(Enemy):
