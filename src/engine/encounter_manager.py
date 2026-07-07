@@ -1,14 +1,19 @@
 from __future__ import annotations # woah time travel
 from typing import TYPE_CHECKING
-import inspect
+import random
 
-from engine.base import Action_Type, Attack_Type
-from engine.action import Action, Attack, Effect
 
 if TYPE_CHECKING:
     from engine.entity import Entity
 
-import instances.entities
+_enemy_registry: list[type] = []
+
+
+def register_enemy():
+    def wrap(cls):
+        _enemy_registry.append(cls)
+        return cls
+    return wrap
 
 
 class Encounter:
@@ -21,13 +26,31 @@ class Encounter:
     def __init__(self, level: int):
         self.level = level
 
+        self.encounter_contents = []
+
         self.generate_encounter()
 
     def generate_encounter(self):
         budget: int = self.level
 
         while budget > 0:
-            pass
+            potential: list[type] = self.get_enemies_below_level(budget)
+            if len(potential) == 0: 
+                break
+            
+            next_enemy: type = random.choice(potential)
+            budget -= next_enemy().level
+            self.encounter_contents.append(next_enemy())
+    
+    @staticmethod
+    def get_enemies_below_level(level: int) -> list[type]:
+        enemies: list[type] = []
+
+        for enemy in _enemy_registry:
+            if enemy().level <= level:
+                enemies.append(enemy)
+        
+        return enemies
 
     
 

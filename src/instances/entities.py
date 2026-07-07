@@ -12,7 +12,7 @@ from instances.spells import *
 from instances.others import *
 
 
-from engine.encounter_manager import EncounterManager
+from engine.encounter_manager import EncounterManager, register_enemy
 
 from engine.entity import Entity, Enemy
 
@@ -22,11 +22,11 @@ from engine.entity import Entity, Enemy
 
 # ----------------- Player summonables ---------------------
 class Summoned_Zombie(Entity):
-    def __init__(self, level: int):
+    def __init__(self, level: int, alignment: bool):
         super().__init__(
             "Zombie the Calm Sea",
             level, 
-            True, 
+            alignment, 
             StatBlock(level*5 + 1,0, 0, 1, Attack_Type.generate_resistances()), 
             [EBite(level)]
         )
@@ -39,11 +39,11 @@ class Summoned_Zombie(Entity):
             action.level_up()
 
 class Summoned_Skelly(Entity):
-    def __init__(self, level: int):
+    def __init__(self, level: int, alignment: bool):
         super().__init__(
             "Skelly the smelly", 
             level, 
-            True, 
+            alignment, 
             StatBlock(level*5,0, 0, 1, Attack_Type.generate_resistances()), 
             [EBite(level), EBone(level)]
         )
@@ -60,7 +60,7 @@ class Summoned_Skelly(Entity):
 
 # --------------------- Enemies ----------------------------
 
-
+@register_enemy()
 class Rat(Enemy):
 
     def __init__(self):
@@ -71,7 +71,7 @@ class Rat(Enemy):
             [EBite(1)]
         )
 
-
+@register_enemy()
 class Kobold(Enemy):
 
     def __init__(self):
@@ -82,7 +82,7 @@ class Kobold(Enemy):
             [EDagger(1), ESling(1)]
         )
 
-
+@register_enemy()
 class Goblin(Enemy):
 
     def __init__(self):
@@ -93,7 +93,7 @@ class Goblin(Enemy):
             [EScimitar(1), EShortbow(1)]
         )
 
-
+@register_enemy()
 class Bugbear(Enemy):
 
     def __init__(self):
@@ -104,7 +104,7 @@ class Bugbear(Enemy):
             [EMorningstar(1), EJavelin(5)]
         )
 
-
+@register_enemy()
 class Dryad(Enemy):
     
     def __init__(self):
@@ -115,6 +115,7 @@ class Dryad(Enemy):
             [EClub(0), EEntangle(5)]
         )
 
+@register_enemy()
 class Ogre(Enemy):
     
     def __init__(self):
@@ -125,7 +126,7 @@ class Ogre(Enemy):
             [EClub(5), EJavelin(5)]
         )
 
-
+@register_enemy()
 class Owlbear(Enemy):
     
     def __init__(self):
@@ -136,7 +137,7 @@ class Owlbear(Enemy):
             [EBite(10), EClaws(10)]
         )
 
-
+@register_enemy()
 class Wolf(Enemy):
     
     def __init__(self):
@@ -147,7 +148,7 @@ class Wolf(Enemy):
             [EBite(5), EClaws(5)]
         )
 
-
+@register_enemy()
 class Wight(Enemy):
     
     def __init__(self):
@@ -158,7 +159,7 @@ class Wight(Enemy):
             [ELongsword(1), ELongbow(1), ELifeDrain(1)]
         )
 
-
+@register_enemy()
 class AirElemental(Enemy):
 
     def __init__(self):
@@ -169,7 +170,7 @@ class AirElemental(Enemy):
             [ESlam(5), EWhirlwind(5)]
         )
 
-
+@register_enemy()
 class EarthElemental(Enemy):
 
     def __init__(self):
@@ -180,7 +181,7 @@ class EarthElemental(Enemy):
             [ESlam(5)]
         )
 
-
+@register_enemy()
 class FireElemental(Enemy):
 
     def __init__(self):
@@ -191,7 +192,7 @@ class FireElemental(Enemy):
             [EFireTouch(10)]
         )
 
-
+@register_enemy()
 class WaterElemental(Enemy):
     
     def __init__(self):
@@ -202,6 +203,7 @@ class WaterElemental(Enemy):
             [ESlam(5), EWave(5)]
         )
 
+@register_enemy()
 class Wraith(Enemy):
     
     def __init__(self):
@@ -209,9 +211,10 @@ class Wraith(Enemy):
             "Water Elemental", 
             25,
             StatBlock(100, 0, 50, 2, Attack_Type.generate_resistances({Attack_Type.POISON: 0, Attack_Type.NECROTIC: 0, Attack_Type.BLUDGEON: 0.5, Attack_Type.SHARP: 0.5})), 
-            [ELifeDrain(10), Summon(Summoned_Skelly(1))]
+            [ELifeDrain(10), Summon(Summoned_Skelly(1, False))]
         )
 
+@register_enemy()
 class Chimera(Enemy):
     
     def __init__(self):
@@ -222,6 +225,7 @@ class Chimera(Enemy):
             [EBite(5), EClaws(5), EHorns(5), EFireBreath(5)]
         )
 
+@register_enemy()
 class Cyclops(Enemy):
 
     def __init__(self):
@@ -232,6 +236,7 @@ class Cyclops(Enemy):
             [EClub(15), ESlam(15)]
         )
 
+@register_enemy()
 class Mage(Enemy):
 
     def __init__(self):
@@ -256,7 +261,8 @@ class Mage(Enemy):
                            EncounterManager.instance().get_aligned(not self.aligned)
 
         return super().get_action()
-    
+
+@register_enemy()
 class MindFlayer(Enemy):
 
     def __init__(self):

@@ -3,8 +3,9 @@ from typing import Any # woah time travel
 
 from engine.base import Action_Type, Attack_Type
 from engine.action import Action, Attack, Effect
-from instances.effects import *
 from engine.entity import Entity
+
+from instances.effects import *
 
 class Sword(Action):
 

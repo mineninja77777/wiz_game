@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 from engine.base import Action_Type, Attack_Type
 from engine.action import Action, Attack, Effect
 from engine.entity import Entity
-
-from effects import *
 if TYPE_CHECKING:
     from engine.entity import Entity
+
+from instances.effects import *
 
 class Firebolt(Action):
 
