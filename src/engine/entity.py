@@ -109,6 +109,9 @@ class Entity:
         self.hp -= damage
         self.hp = round(self.hp, 1) # because points float
 
+        if self.hp <= 0: 
+            EncounterManager.instance().entities.remove(self)
+
     def recieve_effect(self, effect: Effect):
         self.active_effects.append(effect)
         effect.on_apply(self)
