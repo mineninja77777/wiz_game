@@ -9,7 +9,11 @@ from engine.action import enough_mana, Action, Effect, Attack
 from engine.encounter_manager import EncounterManager
 
 class Entity:
+    _next_id = 0
+
     name: str
+    uid: int # should be unique
+
     aligned: bool # player is aligned, enemies are not (aka good/evil)
 
     level: int # doesn't affect stats, is only tracking how many times has been levelled
@@ -24,6 +28,8 @@ class Entity:
 
     def __init__(self, name: str, level: int, aligned: bool, stats: StatBlock, actions: list[Action]):
         self.name = name
+        self.uid = Entity._next_id
+        Entity._next_id += 1
         self.aligned = aligned
         self.level = level
         self.stats = stats
@@ -35,17 +41,18 @@ class Entity:
 
         self.active_effects = []
 
-    def turn(self):
-        blocked = False
-        for effect in self.active_effects:
-            if effect.blocks_turn(self):
-                blocked = True
+    def __del__(self):
+        if self.uid == Entity._next_id - 1: # try do some cleanup, even if not enough
+            Entity._next_id -= 1
 
-        if not blocked:
-            for _ in range(self.stats.turns):
-                action = self.get_action()
-                if action:
-                    self.execute_action(*action)
+    def turn(self):
+        for _ in range(self.stats.turns):
+            if self.is_blocked():
+                continue
+
+            action = self.get_action()
+            if action:
+                self.execute_action(*action)
         
         self.tick_effects()
 
@@ -61,7 +68,7 @@ class Entity:
 
         # filter targets so that bad things happen to enemies (aka aligned differently)
         
-        if action.attacks[0].dmg > 0:
+        if len(action.attacks) > 0 and action.attacks[0].dmg > 0:
             targets: list[Entity] = encounter.get_aligned(not self.aligned) # target enemies
         else:
             targets: list[Entity] = encounter.get_aligned(self.aligned) # target allies
@@ -79,7 +86,7 @@ class Entity:
             raise Exception("uhhhhhhhh no bueno innnit blud")
         
         for i in range(len(action.attacks)):
-            if primary_targets[i].stats.dodge > random.random():
+            if primary_targets[i].stats.dodge < random.random():
                 # resolve primary target
                 primary_targets[i].recieve_attack(action.attacks[i])
                 
@@ -122,6 +129,19 @@ class Entity:
                 effect.remove(self)
             else:
                 effect.tick(self)
+    
+    def is_blocked(self) -> bool:
+        if self.is_dead(): 
+            return True
+        blocked = False
+        for effect in self.active_effects:
+            if effect.blocks_turn(self):
+                blocked = True
+        return blocked
+
+
+    def is_dead(self) -> bool:
+        return self.hp <= 0
     
     def level_up(self):
         pass

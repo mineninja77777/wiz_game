@@ -1,5 +1,5 @@
 import random
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 from engine.base import Attack_Type
 from engine.action import Attack, Effect
@@ -111,6 +111,7 @@ class Stun(Effect):
 class Prone(Effect):
     name: str = "Prone"
 
+    has_blocked: bool
     old_dodge: float
     
     def __init__(self):
@@ -120,7 +121,13 @@ class Prone(Effect):
         self.old_dodge = target.stats.dodge
         target.stats.dodge = 0
 
+        self.has_blocked = False
+
     def blocks_turn(self, target: Entity) -> bool:
+        # should only ever block one turn, which is being used to get up
+        if self.has_blocked:
+            return False
+        self.has_blocked = True
         return True
 
     def expired(self, target: Entity) -> bool:
@@ -185,13 +192,27 @@ class HPMaxReduction(Effect): # works weird but yk whatever
 class SummonEffect(Effect):
     name: str = "Summon"
     
-    summonee: Entity
+    summonee: type
+    summonee_level: int
+    summonee_args: tuple
 
-    def __init__(self, summonee: Entity):
+    def __init__(self, summonee: type, summonee_level: int = -1, *args):
+        """initalises the effect
+
+        Args:
+            summonee (Type[Entity]): the object that will be instantiated to summon
+            summonee_level (int, optional): should not be overriden unless summonee takes level parameter. Defaults to -1.
+        """
         self.summonee = summonee
+        self.summonee_args = args
+        if summonee_level != -1:
+            self.summonee_level = summonee_level
         
     def on_apply(self, target: Entity):
-        EncounterManager.instance().entities.append(self.summonee)
+        if self.summonee_level == -1:
+            EncounterManager.instance().entities.append(self.summonee(*self.summonee_args))
+        else:
+            EncounterManager.instance().entities.append(self.summonee(self.summonee_level, *self.summonee_args))
 
     def expired(self, target: Entity) -> bool:
         return True

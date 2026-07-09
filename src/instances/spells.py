@@ -201,14 +201,27 @@ class Good(Action): # should probably be player-only, as player should be immune
             self.target_effects[0].level += 1
 
 class Summon(Action):
-    def __init__(self, summonee: Entity):
+    def __init__(self, summonee: type, level: int = -1, *args):
+        """a summoning spell
+
+        Args:
+            summonee (Type[Entity]): the entity class that may be summoned
+            level (int): defaults to -1, do not change unless summonee takes level parameter
+            args: other arguments to summonee __init__
+        """
+
+        if level == -1:
+            name: str = summonee(*args).name
+            level = summonee(*args).level
+        else:
+            name: str = summonee(level, *args).name
         super().__init__(
-            name = "Summon Undead",
-            level = summonee.level,
+            name = f"Summon {name}",
+            level = level,
             action_type = Action_Type.SPELL,
             attacks = [],
             target_effects = [],
-            self_effects = [SummonEffect(summonee)],
+            self_effects = [SummonEffect(summonee, level, *args)],
             mana_cost = 20,
             max_level = -1,
             upgrades = [] 
@@ -217,7 +230,8 @@ class Summon(Action):
     def level_up(self):
         self.level += 1
         if isinstance(self.self_effects[0], SummonEffect):
-            self.self_effects[0].summonee.level_up()
+            if self.self_effects[0].summonee_level != -1:
+                self.self_effects[0].summonee_level += 1
 
 class HealSelf(Action): # should probably be player-only, as player should be immune at least
 

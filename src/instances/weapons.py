@@ -321,8 +321,8 @@ class EBone(Action):
             target_effects = [], 
             self_effects = [],
             mana_cost = 0,
-            max_level = 10,
-            upgrades = [WindMace]
+            max_level = -1,
+            upgrades = []
         )
 
     def level_up(self):

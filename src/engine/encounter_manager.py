@@ -29,14 +29,23 @@ class EncounterManager:
     def run_encounter(self, level: int, players: list[Entity]):
         self.generate_encounter(level, players)
 
-        # while not is_finished():
-        #     pass
+        current_entity: Entity = self.entities[0]
 
-    
+        while not self.is_finished():            
+            
+            current_entity.turn()
+
+            current_entity = self.next_entity(current_entity.uid)
+        if len(self.entities) == 0:
+            print("that's rather odd")
+        elif self.entities[0].aligned == True:
+            print("le goods have victored")
+        else:
+            print("le evils have victored")
     
     def generate_encounter(self, level: int, players: list[Entity]):
         self.entities = []
-        self.entities.append(*players)
+        self.entities.extend(players)
 
 
         budget: int = level
@@ -46,12 +55,46 @@ class EncounterManager:
             if len(potential) == 0: 
                 break
             
-            next_enemy: type = random.choice(potential)
-            budget -= next_enemy().level
-            self.entities.append(next_enemy())
+            next_enemy: Entity = random.choice(potential)()
+            budget -= next_enemy.level
+            self.entities.append(next_enemy)
 
     def is_finished(self) -> bool:
         return len(self.get_aligned(False)) == 0 or len(self.get_aligned(True)) == 0
+
+    def next_entity(self, current_uid: int) -> Entity:
+        """gets the next entity
+
+        Args:
+            current_uid (int): the uid of the current entity
+
+        Returns:
+            Entity: the entity next in order of uids, looping back over and starting at lowest uid if not
+        """
+
+        entity: Entity | None = None
+        for test_entity in self.entities:
+            if test_entity.uid <= current_uid:
+                continue
+            if (entity is None) or (entity.uid > test_entity.uid): # if test_entity has lower uid then it must be closer to current_uid
+                entity = test_entity
+        
+        if entity:
+            return entity
+        
+        # loop over, we need to find entity with lowest uid
+        entity = self.entities[0]
+        for test_entity in self.entities:
+            if test_entity.uid < entity.uid:
+                entity = test_entity
+        
+        return entity
+
+    def get_entity_by_uid(self, uid) -> Entity | None:
+        for entity in self.entities:
+            if entity.uid == uid:
+                return entity
+        return None
 
     @staticmethod
     def get_enemies_below_level(level: int) -> list[type]:

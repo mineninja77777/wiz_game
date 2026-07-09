@@ -41,7 +41,7 @@ class Summoned_Zombie(Entity):
 class Summoned_Skelly(Entity):
     def __init__(self, level: int, alignment: bool):
         super().__init__(
-            "Skelly the smelly", 
+            "Skelly the smelly" if alignment else "Eveel Summoned Skellyboy", 
             level, 
             alignment, 
             StatBlock(level*5,0, 0, 1, Attack_Type.generate_resistances()), 
@@ -208,10 +208,10 @@ class Wraith(Enemy):
     
     def __init__(self):
         super().__init__(
-            "Water Elemental", 
+            "Wraith", 
             25,
-            StatBlock(100, 0, 50, 2, Attack_Type.generate_resistances({Attack_Type.POISON: 0, Attack_Type.NECROTIC: 0, Attack_Type.BLUDGEON: 0.5, Attack_Type.SHARP: 0.5})), 
-            [ELifeDrain(10), Summon(Summoned_Skelly(1, False))]
+            StatBlock(100, 0, 50, 1, Attack_Type.generate_resistances({Attack_Type.POISON: 0, Attack_Type.NECROTIC: 0, Attack_Type.BLUDGEON: 0.5, Attack_Type.SHARP: 0.5})), 
+            [ELifeDrain(10), Summon(Summoned_Skelly, 1, False)]
         )
 
 @register_enemy()
