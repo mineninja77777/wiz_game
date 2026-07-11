@@ -4,9 +4,11 @@ from typing import Any # woah time travel
 from engine.base import Action_Type, Attack_Type
 from engine.action import Action, Attack, Effect
 from engine.entity import Entity
+from engine.registries import register_action
 
 from instances.effects import *
 
+@register_action
 class Sword(Action):
 
     def __init__(self, level: int):
@@ -26,6 +28,7 @@ class Sword(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class Longsword(Action):
 
     def __init__(self, level: int):
@@ -45,6 +48,7 @@ class Longsword(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class Broadsword(Action):
 
     def __init__(self, level: int):
@@ -65,6 +69,7 @@ class Broadsword(Action):
         self.attacks[0].dmg += 2
 
 
+@register_action
 class Mace(Action):
 
     def __init__(self, level: int):
@@ -84,6 +89,7 @@ class Mace(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class WindMace(Action):
 
     def __init__(self, level: int):
@@ -104,6 +110,7 @@ class WindMace(Action):
         self.attacks[0].dmg += 3
 
 
+@register_action
 class Axe(Action):
 
     def __init__(self, level: int):
@@ -123,6 +130,7 @@ class Axe(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class FireAxe(Action):
 
     def __init__(self, level: int):
@@ -144,6 +152,7 @@ class FireAxe(Action):
         if isinstance(self.target_effects[0], DOT):
             self.target_effects[0].damage.dmg += 2
 
+@register_action
 class BattleAxe(Action):
 
     def __init__(self, level: int):
@@ -164,6 +173,7 @@ class BattleAxe(Action):
         self.attacks[0].dmg += 3
 
 
+@register_action
 class Daggers(Action):
 
     def __init__(self, level: int):
@@ -184,6 +194,7 @@ class Daggers(Action):
         self.attacks[0].dmg += 0.5
         self.attacks[1].dmg += 0.5
 
+@register_action
 class FrostDaggers(Action):
 
     def __init__(self, level: int):
@@ -204,6 +215,7 @@ class FrostDaggers(Action):
         self.attacks[0].dmg += 0.5
         self.attacks[1].dmg += 0.5
 
+@register_action
 class BloodDaggers(Action):
     
     def __init__(self, level: int):
@@ -227,6 +239,7 @@ class BloodDaggers(Action):
             self.self_effects[0].heal += 1
 
 
+@register_action
 class Staff(Action):
 
     def __init__(self, level: int):
@@ -246,6 +259,7 @@ class Staff(Action):
         self.level += 1
         self.attacks[0].dmg += 1
 
+@register_action
 class EssenceStaff(Action):
 
     def __init__(self, level: int):
@@ -270,6 +284,7 @@ class EssenceStaff(Action):
 
 
 # -------------------- For Enemy (player should never be able to unlock) ---------
+@register_action
 class EBite(Action):
 
     def __init__(self, level: int) -> None:
@@ -290,6 +305,7 @@ class EBite(Action):
         self.level += 1
         self.attacks[0].dmg += 1
 
+@register_action
 class ESling(Action):
 
     def __init__(self, level: int) -> None:
@@ -310,6 +326,7 @@ class ESling(Action):
         self.level += 1
         self.attacks[0].dmg += 1
 
+@register_action
 class EBone(Action):
 
     def __init__(self, level: int):
@@ -329,6 +346,7 @@ class EBone(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class EDagger(Action):
 
     def __init__(self, level: int):
@@ -348,6 +366,7 @@ class EDagger(Action):
         self.level += 1
         self.attacks[0].dmg += 1
 
+@register_action
 class EScimitar(Action):
 
     def __init__(self, level: int):
@@ -367,6 +386,7 @@ class EScimitar(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class EShortbow(Action):
 
     def __init__(self, level: int):
@@ -386,6 +406,7 @@ class EShortbow(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class ELongbow(Action):
 
     def __init__(self, level: int):
@@ -405,6 +426,7 @@ class ELongbow(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class EMorningstar(Action):
     
     def __init__(self, level: int):
@@ -424,6 +446,7 @@ class EMorningstar(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class EClub(Action):
      
     def __init__(self, level: int):
@@ -443,6 +466,7 @@ class EClub(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class EJavelin(Action):
     
     def __init__(self, level: int):
@@ -462,6 +486,7 @@ class EJavelin(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class EClaws(Action):
     
     def __init__(self, level: int):
@@ -481,6 +506,7 @@ class EClaws(Action):
         self.level += 1
         self.attacks[0].dmg += 1
 
+@register_action
 class ELongsword(Action):
 
     def __init__(self, level: int):
@@ -500,6 +526,7 @@ class ELongsword(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class ESlam(Action):
 
     def __init__(self, level: int):
@@ -519,6 +546,7 @@ class ESlam(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class EFireTouch(Action):
 
     def __init__(self, level: int):
@@ -541,6 +569,7 @@ class EFireTouch(Action):
             self.target_effects[0].turns_left += 1
             self.target_effects[0].damage.dmg += 1
 
+@register_action
 class EHorns(Action):
 
     def __init__(self, level: int):
@@ -560,6 +589,7 @@ class EHorns(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class ETentacles(Action):
 
     def __init__(self, level: int):

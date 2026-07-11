@@ -3,19 +3,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 import random
 
-
+from engine.registries import enemy_registry
 if TYPE_CHECKING:
     from engine.entity import Entity
-
-_enemy_registry: list[type] = []
-
-
-def register_enemy():
-    def wrap(cls):
-        _enemy_registry.append(cls)
-        return cls
-    return wrap
-
 
 
 class EncounterManager:
@@ -100,7 +90,7 @@ class EncounterManager:
     def get_enemies_below_level(level: int) -> list[type]:
         enemies: list[type] = []
 
-        for enemy in _enemy_registry:
+        for enemy in enemy_registry:
             if enemy().level <= level:
                 enemies.append(enemy)
         

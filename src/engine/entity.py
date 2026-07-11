@@ -6,6 +6,7 @@ import random
 from engine.base import *
 from engine.action import enough_mana, Action, Effect, Attack
 
+from engine.base import StatBlock
 from engine.encounter_manager import EncounterManager
 
 class Entity:
@@ -106,8 +107,6 @@ class Entity:
                 for effect in action.target_effects:
                     target.recieve_effect(effect)
             
-            
-        
         for effect in action.self_effects:
             self.recieve_effect(effect)
     
@@ -130,6 +129,22 @@ class Entity:
             else:
                 effect.tick(self)
     
+    def clear_effects(self):
+        for effect in self.active_effects:
+            effect.remove(self)
+    
+    def rest(self, long: bool = True):
+        self.clear_effects()
+        
+        self.hp += self.stats.max_hp * (1 - 0.5 * (not long))
+        if self.hp > self.stats.max_hp:
+            self.hp = self.stats.max_hp
+        
+        self.mana += self.stats.max_mana * (1 - 0.5 * (not long))
+        if self.mana > self.stats.max_mana:
+            self.mana = self.stats.max_mana
+        
+    
     def is_blocked(self) -> bool:
         if self.is_dead(): 
             return True
@@ -143,8 +158,33 @@ class Entity:
     def is_dead(self) -> bool:
         return self.hp <= 0
     
+
+class Player(Entity):
+    class_name = "NO CLASS"
+
+    def __init__(self, name: str, stats: StatBlock, actions: list[Action]):
+        super().__init__(name, 1, True, stats, actions)
+
     def level_up(self):
         pass
+
+
+    def upgrade_actions(self, number: int):
+        for _ in range(number):
+            # get player to choose action
+            action = self.actions[0]
+            action.level_up()
+            if action.max_level != -1 and action.level >= action.max_level:
+                # get the player to choose one of the next upgrades
+                chosen_upgrade = action.upgrades[0]
+                self.actions.remove(action)
+                self.actions.append(chosen_upgrade(self.level))
+
+    @staticmethod
+    def create_player() -> Player:
+        name = input("Te llamo por favor") # placeholder for now
+        # code rest later 
+        return Player(name, StatBlock(-1,1,1,1,Attack_Type.generate_resistances()), []) # temp
 
 
 class Enemy(Entity):

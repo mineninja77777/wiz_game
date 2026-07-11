@@ -43,11 +43,6 @@ class Action_Type(Enum):
     OTHER = 2 # generally non-violent
 
 
-class Class(Enum):
-    WARRIOR = 0
-    ROGUE = 1
-    MAGE = 2
-
 @dataclass
 class StatBlock:
     max_hp: float

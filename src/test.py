@@ -1,10 +1,12 @@
 # testing entity
 
 from instances.entities import *
-from engine.action import Attack, Attack_Type
-import engine.encounter_manager as em
+from instances.classes import *
+from instances.weapons import *
+from instances.spells import *
+from instances.others import *
+from engine.registries import *
 
-# print(em._enemy_registry)
-
-encounter_manager = em.EncounterManager.instance()
-encounter_manager.run_encounter(5, [Summoned_Skelly(10, True)])
+print(enemy_registry)
+print(class_registry)
+print(action_registry)

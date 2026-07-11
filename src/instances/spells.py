@@ -3,12 +3,14 @@ from typing import TYPE_CHECKING
 
 from engine.base import Action_Type, Attack_Type
 from engine.action import Action, Attack, Effect
-from engine.entity import Entity
+from engine.registries import register_action
 if TYPE_CHECKING:
     from engine.entity import Entity
 
 from instances.effects import *
 
+
+@register_action
 class Firebolt(Action):
 
     def __init__(self, level: int):
@@ -28,6 +30,7 @@ class Firebolt(Action):
         self.level += 1
         self.attacks[0].dmg += 3
 
+@register_action
 class Fireball(Action):
 
     def __init__(self, level: int):
@@ -48,6 +51,7 @@ class Fireball(Action):
         self.attacks[0].dmg += 10
 
 
+@register_action
 class MagicMissiles(Action):
 
     def __init__(self, level: int):
@@ -73,6 +77,7 @@ class MagicMissiles(Action):
         self.attacks[1].dmg += 0.5
         self.attacks[2].dmg += 0.5
 
+@register_action
 class MissileStorm(Action):
 
     def __init__(self, level: int):
@@ -99,6 +104,7 @@ class MissileStorm(Action):
         self.attacks[2].dmg += 1
 
 
+@register_action
 class EtherealStrike(Action):
 
     def __init__(self, level: int):
@@ -118,6 +124,7 @@ class EtherealStrike(Action):
         self.level += 1
         self.attacks[0].dmg += 4
 
+@register_action
 class PWK(Action):
 
     def __init__(self, level: int):
@@ -138,6 +145,7 @@ class PWK(Action):
         self.attacks[0].dmg += 10
 
 
+@register_action
 class Rot(Action):
 
     def __init__(self, level: int):
@@ -159,6 +167,7 @@ class Rot(Action):
             self.target_effects[0].damage.dmg += 2
 
 
+@register_action
 class Hold(Action):
 
     def __init__(self, level: int):
@@ -180,6 +189,7 @@ class Hold(Action):
             self.target_effects[0].turns_left += 1
 
 
+@register_action
 class Good(Action): # should probably be player-only, as player should be immune at least
 
     def __init__(self, level: int):
@@ -200,12 +210,14 @@ class Good(Action): # should probably be player-only, as player should be immune
         if isinstance(self.target_effects[0], Realign):
             self.target_effects[0].level += 1
 
+@register_action
 class Summon(Action):
     def __init__(self, summonee: type, level: int = -1, *args):
         """a summoning spell
 
         Args:
-            summonee (Type[Entity]): the entity class that may be summoned
+            @register_actionsummonee (Type[Entity]): the entity 
+            class that may be summoned
             level (int): defaults to -1, do not change unless summonee takes level parameter
             args: other arguments to summonee __init__
         """
@@ -233,6 +245,7 @@ class Summon(Action):
             if self.self_effects[0].summonee_level != -1:
                 self.self_effects[0].summonee_level += 1
 
+@register_action
 class HealSelf(Action): # should probably be player-only, as player should be immune at least
 
     def __init__(self, level: int):
@@ -255,6 +268,7 @@ class HealSelf(Action): # should probably be player-only, as player should be im
 
 # ------------------------ Enemy Spells ------------------------------
 
+@register_action
 class EEntangle(Action):
     
     def __init__(self, level: int):
@@ -274,6 +288,7 @@ class EEntangle(Action):
         self.level += 1
         self.attacks[0].dmg += 1
 
+@register_action
 class ELifeDrain(Action):
     
     def __init__(self, level: int):
@@ -293,6 +308,7 @@ class ELifeDrain(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class EWhirlwind(Action):
     
     def __init__(self, level: int):
@@ -312,6 +328,7 @@ class EWhirlwind(Action):
         self.level += 1
         self.attacks[0].dmg += 2
 
+@register_action
 class EWave(Action):
     
     def __init__(self, level: int):
@@ -334,6 +351,7 @@ class EWave(Action):
             self.target_effects[1].turns_left += 1
             self.target_effects[1].damage.dmg += 2
 
+@register_action
 class EFireBreath(Action):
     
     def __init__(self, level: int):
@@ -353,6 +371,7 @@ class EFireBreath(Action):
         self.level += 1
         self.attacks[0].dmg += 5
 
+@register_action
 class EMindBlast(Action):
 
     def __init__(self, level: int):

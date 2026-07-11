@@ -5,6 +5,10 @@ import random
 
 from engine.base import *
 from engine.action import enough_mana, Action, Effect, Attack
+from engine.encounter_manager import EncounterManager
+from engine.registries import register_enemy
+from engine.entity import Entity, Enemy
+
 
 from instances.effects import *
 from instances.weapons import *
@@ -12,9 +16,6 @@ from instances.spells import *
 from instances.others import *
 
 
-from engine.encounter_manager import EncounterManager, register_enemy
-
-from engine.entity import Entity, Enemy
 
 
 # ---------------------   NPCS? ----------------------------
@@ -60,7 +61,7 @@ class Summoned_Skelly(Entity):
 
 # --------------------- Enemies ----------------------------
 
-@register_enemy()
+@register_enemy
 class Rat(Enemy):
 
     def __init__(self):
@@ -71,7 +72,7 @@ class Rat(Enemy):
             [EBite(1)]
         )
 
-@register_enemy()
+@register_enemy
 class Kobold(Enemy):
 
     def __init__(self):
@@ -82,7 +83,7 @@ class Kobold(Enemy):
             [EDagger(1), ESling(1)]
         )
 
-@register_enemy()
+@register_enemy
 class Goblin(Enemy):
 
     def __init__(self):
@@ -93,7 +94,7 @@ class Goblin(Enemy):
             [EScimitar(1), EShortbow(1)]
         )
 
-@register_enemy()
+@register_enemy
 class Bugbear(Enemy):
 
     def __init__(self):
@@ -104,7 +105,7 @@ class Bugbear(Enemy):
             [EMorningstar(1), EJavelin(5)]
         )
 
-@register_enemy()
+@register_enemy
 class Dryad(Enemy):
     
     def __init__(self):
@@ -115,7 +116,7 @@ class Dryad(Enemy):
             [EClub(0), EEntangle(5)]
         )
 
-@register_enemy()
+@register_enemy
 class Ogre(Enemy):
     
     def __init__(self):
@@ -126,7 +127,7 @@ class Ogre(Enemy):
             [EClub(5), EJavelin(5)]
         )
 
-@register_enemy()
+@register_enemy
 class Owlbear(Enemy):
     
     def __init__(self):
@@ -137,7 +138,7 @@ class Owlbear(Enemy):
             [EBite(10), EClaws(10)]
         )
 
-@register_enemy()
+@register_enemy
 class Wolf(Enemy):
     
     def __init__(self):
@@ -148,7 +149,7 @@ class Wolf(Enemy):
             [EBite(5), EClaws(5)]
         )
 
-@register_enemy()
+@register_enemy
 class Wight(Enemy):
     
     def __init__(self):
@@ -159,7 +160,7 @@ class Wight(Enemy):
             [ELongsword(1), ELongbow(1), ELifeDrain(1)]
         )
 
-@register_enemy()
+@register_enemy
 class AirElemental(Enemy):
 
     def __init__(self):
@@ -170,7 +171,7 @@ class AirElemental(Enemy):
             [ESlam(5), EWhirlwind(5)]
         )
 
-@register_enemy()
+@register_enemy
 class EarthElemental(Enemy):
 
     def __init__(self):
@@ -181,7 +182,7 @@ class EarthElemental(Enemy):
             [ESlam(5)]
         )
 
-@register_enemy()
+@register_enemy
 class FireElemental(Enemy):
 
     def __init__(self):
@@ -192,7 +193,7 @@ class FireElemental(Enemy):
             [EFireTouch(10)]
         )
 
-@register_enemy()
+@register_enemy
 class WaterElemental(Enemy):
     
     def __init__(self):
@@ -203,7 +204,7 @@ class WaterElemental(Enemy):
             [ESlam(5), EWave(5)]
         )
 
-@register_enemy()
+@register_enemy
 class Wraith(Enemy):
     
     def __init__(self):
@@ -214,7 +215,7 @@ class Wraith(Enemy):
             [ELifeDrain(10), Summon(Summoned_Skelly, 1, False)]
         )
 
-@register_enemy()
+@register_enemy
 class Chimera(Enemy):
     
     def __init__(self):
@@ -225,7 +226,7 @@ class Chimera(Enemy):
             [EBite(5), EClaws(5), EHorns(5), EFireBreath(5)]
         )
 
-@register_enemy()
+@register_enemy
 class Cyclops(Enemy):
 
     def __init__(self):
@@ -236,7 +237,7 @@ class Cyclops(Enemy):
             [EClub(15), ESlam(15)]
         )
 
-@register_enemy()
+@register_enemy
 class Mage(Enemy):
 
     def __init__(self):
@@ -262,7 +263,7 @@ class Mage(Enemy):
 
         return super().get_action()
 
-@register_enemy()
+@register_enemy
 class MindFlayer(Enemy):
 
     def __init__(self):

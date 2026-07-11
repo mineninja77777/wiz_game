@@ -3,9 +3,11 @@ from __future__ import annotations # woah time travel
 from engine.base import Action_Type, Attack_Type
 from engine.action import Action, Attack, Effect
 from engine.entity import Entity
+from engine.registries import register_action
 
 from instances.effects import *
 
+@register_action
 class Rest(Action): # regen some mana
 
     def __init__(self, level: int):
