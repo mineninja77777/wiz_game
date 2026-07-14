@@ -3,9 +3,19 @@
         "name": "str",
         "dmg": "float",
         "hp": "float",
-        "mana": "float"
+        "mana": "float",
+        "actions": "list[str]",
+        "classes": "list[str]"
     },
     "events": {
+        "input_name": [
+            "Hear, adventurer, what doest thou call thyself?",
+            "Hark, what is thy name and nomination?"
+        ],
+        "select_class": [
+            "What occupation have you?\n{classes}",
+            "Which path draws your focus?\n{classes}"
+        ],
         "take_damage": [
             "{name} hath had inflicted upon them {dmg} damage",
             "{name} suffered {dmg} damage"
@@ -13,6 +23,12 @@
         "output_stats": [
             "{name} hath {hp} candles left lit, and {mana} components of essence remaining",
             "to {name} remains {hp} health and {mana} mana"
+        ],
+        "upgrade_actions": [
+            "Select an action to upgrade:\n{actions}"
+        ],
+        "invalid_input": [
+            "thou hast failed to provide me with a valid input"
         ]
     }
 }

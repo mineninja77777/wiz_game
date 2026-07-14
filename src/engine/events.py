@@ -1,4 +1,3 @@
-
 class Event:
     kind: str
     params: dict[str, object]

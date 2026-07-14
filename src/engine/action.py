@@ -41,6 +41,9 @@ class Effect: # can be positive or negative
     
     def remove(self, target: "Entity"):
         target.active_effects.remove(self)
+    
+    def __str__(self):
+        return self.name
 
 
 @dataclass(kw_only = True)
@@ -61,6 +64,9 @@ class Action:
 
     def level_up(self):
         self.level += 1
+    
+    def __str__(self):
+        return f"{self.name} ({self.level})"
 
 
 

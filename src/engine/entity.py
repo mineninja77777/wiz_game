@@ -9,6 +9,11 @@ from engine.action import enough_mana, Action, Effect, Attack
 from engine.base import StatBlock
 from engine.encounter_manager import EncounterManager
 
+from engine.events import Event
+from engine.UI import UIManager
+
+from engine.registries import class_registry
+
 class Entity:
     _next_id = 0
 
@@ -182,9 +187,12 @@ class Player(Entity):
 
     @staticmethod
     def create_player() -> Player:
-        name = input("Te llamo por favor") # placeholder for now
-        # code rest later 
-        return Player(name, StatBlock(-1,1,1,1,Attack_Type.generate_resistances()), []) # temp
+        ui_manager: UIManager = UIManager.instance()
+        name: str = ui_manager.get_input(Event('input_name'))
+        class_options = {class_.class_name: class_ for class_ in class_registry}
+        player_class = ui_manager.get_input(Event('select_class', classes=list(class_options.keys())), class_options)
+        
+        return player_class(name)
 
 
 class Enemy(Entity):

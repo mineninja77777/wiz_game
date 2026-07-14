@@ -22,9 +22,15 @@ def add_override(kind: str, params: dict[str, str]) -> None:
     str_params: str = ""
     for param in params.keys():
         str_params += f", {param}: {params[param]}"
-    overload: str = f"""
+    if str_params == "":
+        overload: str = f"""
     @overload
-    def __init__(self, kind: Literal["{kind}"], /{str_params}) -> None: ...
+    def __init__(self, kind: Literal["{kind}"]) -> None: ...
+    """
+    else:
+        overload: str = f"""
+    @overload
+    def __init__(self, kind: Literal["{kind}"], *{str_params}) -> None: ...
     """
     events += overload
 
