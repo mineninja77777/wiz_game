@@ -11,4 +11,4 @@ from engine.entity import Player
 
 from engine.events import Event
 
-print(Player.create_player())
+print(Player.create_player().actions)

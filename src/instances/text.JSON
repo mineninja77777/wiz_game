@@ -1,10 +1,12 @@
 {
     "param_types": {
         "name": "str",
+        "action_name": "str",
         "dmg": "float",
         "hp": "float",
         "mana": "float",
         "actions": "list[str]",
+        "upgrades": "list[str]",
         "classes": "list[str]"
     },
     "events": {
@@ -16,6 +18,9 @@
             "What occupation have you?\n{classes}",
             "Which path draws your focus?\n{classes}"
         ],
+        "select_actions": [
+            "What would you like to start off with?\n{actions}"
+        ],
         "take_damage": [
             "{name} hath had inflicted upon them {dmg} damage",
             "{name} suffered {dmg} damage"
@@ -24,8 +29,11 @@
             "{name} hath {hp} candles left lit, and {mana} components of essence remaining",
             "to {name} remains {hp} health and {mana} mana"
         ],
-        "upgrade_actions": [
-            "Select an action to upgrade:\n{actions}"
+        "level_up_actions": [
+            "Select an action to level up:\n{actions}"
+        ],
+        "upgrade_action": [
+            "Select an upgrade for {action_name}:\n{upgrades}"
         ],
         "invalid_input": [
             "thou hast failed to provide me with a valid input"

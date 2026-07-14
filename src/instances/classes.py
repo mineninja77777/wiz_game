@@ -7,7 +7,8 @@ from engine.base import StatBlock
 from engine.encounter_manager import EncounterManager as em
 from engine.entity import Entity, Player
 from engine.registries import action_registry, register_class
-
+from engine.events import Event
+from engine.UI import UIManager
 
 from instances.weapons import *
 from instances.spells import *
@@ -18,6 +19,8 @@ class Warrior(Player):
     class_name = "Warrior"
 
     def __init__(self, name: str):
+        ui_manager: UIManager = UIManager.instance()
+
         inital_stats: StatBlock = StatBlock(
             max_hp=12,
             dodge=0,
@@ -26,14 +29,20 @@ class Warrior(Player):
             resistances=Attack_Type.generate_resistances()
         )
 
-        # later should get to choose two of Sword, Mace, and Axe when the dialogue manager is properly done
-        inital_actions: list[Action] = [
+        action_choices: list[Action] = [
             Sword(1),
             Axe(1),
-            Rest(1)
+            Mace(1)
         ]
+        chosen_actions: list[Action] = [Rest(1)]
+        
+        for _ in range(2):
+            choices: dict[str, Action] = UIManager.generate_options(action_choices)
+            chosen_one: Action = ui_manager.get_input(Event('select_actions', actions=list(choices.keys())), choices)
+            action_choices.remove(chosen_one)
+            chosen_actions.append(chosen_one)
 
-        super().__init__(name, inital_stats, inital_actions)
+        super().__init__(name, inital_stats, chosen_actions)
     
     def level_up(self):
         self.level += 1
@@ -53,6 +62,8 @@ class Mage(Player):
     class_name = "Mage"
 
     def __init__(self, name: str):
+        ui_manager: UIManager = UIManager.instance()
+
         inital_stats: StatBlock = StatBlock(
             max_hp=6,
             dodge=0,
@@ -61,15 +72,23 @@ class Mage(Player):
             resistances=Attack_Type.generate_resistances({Attack_Type.MAGICAL: 0.5})
         )
 
-        # later should get to choose two of player spells when the dialogue manager is properly done
-        inital_actions: list[Action] = [
-            Staff(1),
+        
+        action_choices: list[Action] = [
             Firebolt(1),
             MagicMissiles(1),
+        ]
+        chosen_actions: list[Action] = [
+            Staff(1),
             Rest(1)
         ]
 
-        super().__init__(name, inital_stats, inital_actions)
+        for _ in range(2):
+            choices: dict[str, Action] = UIManager.generate_options(action_choices)
+            chosen_one: Action = ui_manager.get_input(Event('select_actions', actions=list(choices.keys())), choices)
+            action_choices.remove(chosen_one)
+            chosen_actions.append(chosen_one)
+
+        super().__init__(name, inital_stats, chosen_actions)
     
     def level_up(self):
         self.level += 1

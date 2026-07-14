@@ -175,13 +175,14 @@ class Player(Entity):
 
 
     def upgrade_actions(self, number: int):
+        ui_manager: UIManager = UIManager.instance()
         for _ in range(number):
-            # get player to choose action
-            action = self.actions[0]
+            options: dict[str, Action] = UIManager.generate_options(self.actions)
+            action = ui_manager.get_input(Event('level_up_actions', actions=list(options.keys())), options)
             action.level_up()
             if action.max_level != -1 and action.level >= action.max_level:
-                # get the player to choose one of the next upgrades
-                chosen_upgrade = action.upgrades[0]
+                upgrade_options = UIManager.generate_options(action.upgrades)
+                chosen_upgrade = ui_manager.get_input(Event('upgrade_action', action_name=action.name, upgrades=list(upgrade_options.keys())), upgrade_options)
                 self.actions.remove(action)
                 self.actions.append(chosen_upgrade(self.level))
 
