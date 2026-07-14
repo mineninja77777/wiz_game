@@ -1,0 +1,18 @@
+{
+    "param_types": {
+        "name": "str",
+        "dmg": "float",
+        "hp": "float",
+        "mana": "float"
+    },
+    "events": {
+        "take_damage": [
+            "{name} hath had inflicted upon them {dmg} damage",
+            "{name} suffered {dmg} damage"
+        ],
+        "output_stats": [
+            "{name} hath {hp} candles left lit, and {mana} components of essence remaining",
+            "to {name} remains {hp} health and {mana} mana"
+        ]
+    }
+}
