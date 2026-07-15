@@ -11,4 +11,7 @@ from engine.entity import Player
 
 from engine.events import Event
 
-print(Player.create_player().actions)
+player = Player.create_player()
+for i in range(8):
+    player.actions[0].level_up()
+player.level_up()

@@ -13,6 +13,7 @@ from engine.UI import UIManager
 from instances.weapons import *
 from instances.spells import *
 from instances.others import *
+from instances.entities import Summoned_Zombie, Summoned_Skelly
 
 @register_class
 class Warrior(Player):
@@ -38,7 +39,7 @@ class Warrior(Player):
         
         for _ in range(2):
             choices: dict[str, Action] = UIManager.generate_options(action_choices)
-            chosen_one: Action = ui_manager.get_input(Event('select_actions', actions=list(choices.keys())), choices)
+            chosen_one: Action = ui_manager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
             action_choices.remove(chosen_one)
             chosen_actions.append(chosen_one)
 
@@ -61,6 +62,17 @@ class Warrior(Player):
 class Mage(Player):
     class_name = "Mage"
 
+    spells_list: list[Action] = [
+        Firebolt(1),
+        MagicMissiles(1),
+        EtherealStrike(1),
+        Rot(1),
+        Hold(1),
+        Good(1),
+        Summon(Summoned_Skelly, 1, True),
+        HealSelf(1)
+    ]
+
     def __init__(self, name: str):
         ui_manager: UIManager = UIManager.instance()
 
@@ -75,18 +87,17 @@ class Mage(Player):
         
         action_choices: list[Action] = [
             Firebolt(1),
-            MagicMissiles(1),
+            MagicMissiles(1)
         ]
         chosen_actions: list[Action] = [
             Staff(1),
             Rest(1)
         ]
 
-        for _ in range(2):
-            choices: dict[str, Action] = UIManager.generate_options(action_choices)
-            chosen_one: Action = ui_manager.get_input(Event('select_actions', actions=list(choices.keys())), choices)
-            action_choices.remove(chosen_one)
-            chosen_actions.append(chosen_one)
+        choices: dict[str, Action] = UIManager.generate_options(action_choices)
+        chosen_one: Action = ui_manager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
+        action_choices.remove(chosen_one)
+        chosen_actions.append(chosen_one)
 
         super().__init__(name, inital_stats, chosen_actions)
     
@@ -95,12 +106,12 @@ class Mage(Player):
 
         self.stats.max_hp += 6
 
-        # add new actions
-        # need to work out registries first
+        if self.level % 2 == 0:
+            self.select_new_action(self.spells_list)
 
         # upgrade some actions
         self.upgrade_actions(3)
         
-        # special per-level stuff
+
         if self.level == 10:
             self.stats.turns += 1

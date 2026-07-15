@@ -18,7 +18,7 @@
             "What occupation have you?\n{classes}",
             "Which path draws your focus?\n{classes}"
         ],
-        "select_actions": [
+        "select_starting_actions": [
             "What would you like to start off with?\n{actions}"
         ],
         "take_damage": [
@@ -31,6 +31,9 @@
         ],
         "level_up_actions": [
             "Select an action to level up:\n{actions}"
+        ],
+        "gain_new_actions": [
+            "Which new action bequeaths your fancy?\n{actions}"
         ],
         "upgrade_action": [
             "Select an upgrade for {action_name}:\n{upgrades}"

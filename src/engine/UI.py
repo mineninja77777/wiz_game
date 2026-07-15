@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import overload
+from collections.abc import Callable
 import os.path
 import json
 import random
@@ -43,8 +44,10 @@ class UIManager:
         return options[user_input]
     
     @staticmethod
-    def generate_options[T](options: list[T]) -> dict[str, T]:
-        return {str(choice): choice for choice in options}
+    def generate_options[T](options: list[T], str_func: Callable[[T], str] | None = None) -> dict[str, T]:
+        if str_func is None:
+            return {str(choice): choice for choice in options}
+        return {str_func(choice): choice for choice in options}
 
     def data(self) -> dict[str, list[str]]:
         if self._data is None:

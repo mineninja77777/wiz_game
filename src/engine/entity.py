@@ -173,6 +173,20 @@ class Player(Entity):
     def level_up(self):
         pass
 
+    def select_new_action(self, actions: list[Action]):
+        ui_manager: UIManager = UIManager.instance()
+
+        possibilities: list[Action] = []
+        for action in actions:
+            if not action in self.actions:
+                possibilities.append(action)
+        if len(possibilities) == 0: return # all actions are already owned
+
+        options: dict[str, Action] = UIManager.generate_options(possibilities)
+        action = ui_manager.get_input(Event('gain_new_actions', actions=list(options.keys())), options)
+
+        self.actions.append(action)
+
 
     def upgrade_actions(self, number: int):
         ui_manager: UIManager = UIManager.instance()
@@ -181,10 +195,10 @@ class Player(Entity):
             action = ui_manager.get_input(Event('level_up_actions', actions=list(options.keys())), options)
             action.level_up()
             if action.max_level != -1 and action.level >= action.max_level:
-                upgrade_options = UIManager.generate_options(action.upgrades)
+                upgrade_options = UIManager.generate_options(action.upgrades, lambda upgrade : upgrade(1).name)
                 chosen_upgrade = ui_manager.get_input(Event('upgrade_action', action_name=action.name, upgrades=list(upgrade_options.keys())), upgrade_options)
                 self.actions.remove(action)
-                self.actions.append(chosen_upgrade(self.level))
+                self.actions.append(chosen_upgrade(action.level))
 
     @staticmethod
     def create_player() -> Player:

@@ -264,7 +264,7 @@ class EssenceStaff(Action):
 
     def __init__(self, level: int):
         super().__init__(
-            name = "Staff",
+            name = "Essence Staff",
             level = level,
             action_type = Action_Type.WEAPON,
             attacks = [Attack(3 + level, 1, Attack_Type.BLUDGEON, 1)],
