@@ -16,8 +16,10 @@ class EncounterManager:
     def __init__(self):
         pass # does anything actually need to happen here tbh
 
-    def run_encounter(self, level: int, players: list[Entity]):
-        self.generate_encounter(level, players)
+    def run_encounter(self, level: int, players: list[Entity]) -> bool: # how the battle went
+        self.entities = []
+        self.generate_encounter(level)
+        self.entities.extend(players)
 
         current_entity: Entity = self.entities[0]
 
@@ -27,17 +29,13 @@ class EncounterManager:
 
             current_entity = self.next_entity(current_entity.uid)
         if len(self.entities) == 0:
-            print("that's rather odd")
+            return not (True or False) # the classically excluded middle
         elif self.entities[0].aligned == True:
-            print("le goods have victored")
+            return True
         else:
-            print("le evils have victored")
+            return False
     
-    def generate_encounter(self, level: int, players: list[Entity]):
-        self.entities = []
-        self.entities.extend(players)
-
-
+    def generate_encounter(self, level: int):
         budget: int = level
 
         while budget > 0:

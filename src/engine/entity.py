@@ -139,7 +139,14 @@ class Entity:
             effect.remove(self)
     
     def rest(self, long: bool = True):
+        
         self.clear_effects()
+
+        if long:
+            UIManager.print_event(Event('long_rest', name=self.name))
+        else:
+            UIManager.print_event(Event('short_rest', name=self.name))
+
         
         self.hp += self.stats.max_hp * (1 - 0.5 * (not long))
         if self.hp > self.stats.max_hp:
@@ -171,10 +178,35 @@ class Player(Entity):
         super().__init__(name, 1, True, stats, actions)
 
     def level_up(self):
-        pass
+        self.level += 1
+        UIManager.print_event(Event('level_up', name=self.name, level=self.level))
+
+    def turn(self):
+        UIManager.print_event(Event('start_turn', name=self.name))
+        return super().turn()
+
+    def get_action(self) -> tuple[Action, list[Entity], list[Entity]] | None:
+        encounter: EncounterManager = EncounterManager.instance()
+        
+        a_options = UIManager.generate_options(enough_mana(self.actions, self.mana))
+        action: Action = UIManager.get_input(Event('select_action', actions=list(a_options.keys())), a_options)
+
+        # filter targets so that bad things happen to enemies (aka aligned differently)
+        
+        if len(action.attacks) > 0 and action.attacks[0].dmg > 0:
+            targets: list[Entity] = encounter.get_aligned(not self.aligned) # target enemies
+        else:
+            targets: list[Entity] = encounter.get_aligned(self.aligned) # target allies
+        
+        primary_targets: list[Entity] = []
+        for _ in range(len(action.attacks)):
+            t_options = UIManager.generate_options(targets)
+            primary_targets.append(UIManager.get_input(Event('select_target', enemies=list(t_options.keys())), t_options))
+        
+        return action, primary_targets, targets
+
 
     def select_new_action(self, actions: list[Action]):
-        ui_manager: UIManager = UIManager.instance()
 
         possibilities: list[Action] = []
         for action in actions:
@@ -183,29 +215,29 @@ class Player(Entity):
         if len(possibilities) == 0: return # all actions are already owned
 
         options: dict[str, Action] = UIManager.generate_options(possibilities)
-        action = ui_manager.get_input(Event('gain_new_actions', actions=list(options.keys())), options)
+        action = UIManager.get_input(Event('gain_new_actions', actions=list(options.keys())), options)
 
         self.actions.append(action)
 
 
     def upgrade_actions(self, number: int):
-        ui_manager: UIManager = UIManager.instance()
+        
         for _ in range(number):
             options: dict[str, Action] = UIManager.generate_options(self.actions)
-            action = ui_manager.get_input(Event('level_up_actions', actions=list(options.keys())), options)
+            action = UIManager.get_input(Event('level_up_actions', actions=list(options.keys())), options)
             action.level_up()
             if action.max_level != -1 and action.level >= action.max_level:
                 upgrade_options = UIManager.generate_options(action.upgrades, lambda upgrade : upgrade(1).name)
-                chosen_upgrade = ui_manager.get_input(Event('upgrade_action', action_name=action.name, upgrades=list(upgrade_options.keys())), upgrade_options)
+                chosen_upgrade = UIManager.get_input(Event('upgrade_action', action_name=action.name, upgrades=list(upgrade_options.keys())), upgrade_options)
                 self.actions.remove(action)
                 self.actions.append(chosen_upgrade(action.level))
 
     @staticmethod
     def create_player() -> Player:
-        ui_manager: UIManager = UIManager.instance()
-        name: str = ui_manager.get_input(Event('input_name'))
+        
+        name: str = UIManager.get_input(Event('input_name'))
         class_options = {class_.class_name: class_ for class_ in class_registry}
-        player_class = ui_manager.get_input(Event('select_class', classes=list(class_options.keys())), class_options)
+        player_class = UIManager.get_input(Event('select_class', classes=list(class_options.keys())), class_options)
         
         return player_class(name)
 

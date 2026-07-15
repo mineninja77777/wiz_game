@@ -9,16 +9,16 @@ from engine.events import Event
 
 
 class UIManager:
-    _instance: UIManager | None = None
-
     _data: dict[str, list[str]] | None = None
 
     def __init__(self) -> None:
-        self.data()
+        raise Exception("nope")
 
-    def print_event(self, event: Event) -> None:
+    @classmethod
+    def print_event(cls, event: Event) -> None:
         # json structure for prints is name: [possible msgs]
-        msg: str = random.choice(self.data()[event.kind])
+        a = cls.data()
+        msg: str = random.choice(cls.data()[event.kind])
         for name, val in event.params.items():
             if not isinstance(val, list):
                 msg = msg.replace('{' + name + '}', str(val))
@@ -26,19 +26,22 @@ class UIManager:
             msg = msg.replace('{' + name + '}', "\n".join([str(va) for va in val]))
         print(msg)
     
+    @classmethod
     @overload
-    def get_input(self, event: Event) -> str: ...
+    def get_input(cls, event: Event) -> str: ...
 
+    @classmethod
     @overload
-    def get_input[T](self, event: Event, options: dict[str, T]) -> T: ...
+    def get_input[T](cls, event: Event, options: dict[str, T]) -> T: ...
 
-    def get_input[T](self, event: Event, options: dict[str, T] | None = None) -> T | str:
-        self.print_event(event)
+    @classmethod
+    def get_input[T](cls, event: Event, options: dict[str, T] | None = None) -> T | str:
+        cls.print_event(event)
         user_input: str = input()
         if options is None:
             return user_input
         while user_input not in options.keys():
-            self.print_event(Event('invalid_input'))
+            cls.print_event(Event('invalid_input'))
             user_input = input()
         
         return options[user_input]
@@ -48,16 +51,11 @@ class UIManager:
         if str_func is None:
             return {str(choice): choice for choice in options}
         return {str_func(choice): choice for choice in options}
-
-    def data(self) -> dict[str, list[str]]:
-        if self._data is None:
-            text = json.load(open(os.path.abspath("src/instances/text.JSON")))
-            self._data = text["events"]
-            return text
-        return self._data
-
+    
     @classmethod
-    def instance(cls) -> UIManager:
-        if cls._instance is None:
-            cls._instance = UIManager()
-        return cls._instance
+    def data(cls) -> dict[str, list[str]]:
+        if cls._data is None:
+            text = json.load(open(os.path.abspath("src/instances/text.JSON")))
+            cls._data = text["events"]
+            return text["events"]
+        return cls._data

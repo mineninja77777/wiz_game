@@ -20,7 +20,7 @@ class Warrior(Player):
     class_name = "Warrior"
 
     def __init__(self, name: str):
-        ui_manager: UIManager = UIManager.instance()
+        
 
         inital_stats: StatBlock = StatBlock(
             max_hp=12,
@@ -39,14 +39,16 @@ class Warrior(Player):
         
         for _ in range(2):
             choices: dict[str, Action] = UIManager.generate_options(action_choices)
-            chosen_one: Action = ui_manager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
+            chosen_one: Action = UIManager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
             action_choices.remove(chosen_one)
             chosen_actions.append(chosen_one)
 
         super().__init__(name, inital_stats, chosen_actions)
     
     def level_up(self):
+        
         self.level += 1
+        UIManager.print_event(Event('level_up', name=self.name, level=self.level))
 
         self.stats.max_hp += 12
 
@@ -74,7 +76,7 @@ class Mage(Player):
     ]
 
     def __init__(self, name: str):
-        ui_manager: UIManager = UIManager.instance()
+        
 
         inital_stats: StatBlock = StatBlock(
             max_hp=6,
@@ -95,14 +97,16 @@ class Mage(Player):
         ]
 
         choices: dict[str, Action] = UIManager.generate_options(action_choices)
-        chosen_one: Action = ui_manager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
+        chosen_one: Action = UIManager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
         action_choices.remove(chosen_one)
         chosen_actions.append(chosen_one)
 
         super().__init__(name, inital_stats, chosen_actions)
     
     def level_up(self):
+        
         self.level += 1
+        UIManager.print_event(Event('level_up', name=self.name, level=self.level))
 
         self.stats.max_hp += 6
 
