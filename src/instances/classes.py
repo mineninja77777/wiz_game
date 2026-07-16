@@ -38,7 +38,7 @@ class Warrior(Player):
         chosen_actions: list[Action] = [Rest(1)]
         
         for _ in range(2):
-            choices: dict[str, Action] = UIManager.generate_options(action_choices)
+            choices: dict[str, Action] = UIManager.generate_options(action_choices, str_func=lambda a: a.name)
             chosen_one: Action = UIManager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
             action_choices.remove(chosen_one)
             chosen_actions.append(chosen_one)
@@ -96,7 +96,7 @@ class Mage(Player):
             Rest(1)
         ]
 
-        choices: dict[str, Action] = UIManager.generate_options(action_choices)
+        choices: dict[str, Action] = UIManager.generate_options(action_choices, str_func=lambda a: a.name)
         chosen_one: Action = UIManager.get_input(Event('select_starting_actions', actions=list(choices.keys())), choices)
         action_choices.remove(chosen_one)
         chosen_actions.append(chosen_one)

@@ -10,5 +10,5 @@ from engine.UI import UIManager
 from engine.entity import Player
 
 from engine.events import Event
-
-player = Player.create_player()
+from engine.game_manager import GameManager
+GameManager.instance()

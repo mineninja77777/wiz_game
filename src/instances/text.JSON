@@ -2,6 +2,7 @@
     "param_types": {
         "name": "str",
         "action_name": "str",
+        "effect": "str",
         "level": "int",
         "dmg": "float",
         "hp": "float",
@@ -9,7 +10,8 @@
         "actions": "list[str]",
         "upgrades": "list[str]",
         "classes": "list[str]",
-        "enemies": "list[str]"
+        "enemies": "list[str]",
+        "effects": "list[str]"
     },
     "events": {
         "input_name": [
@@ -23,8 +25,11 @@
         "select_starting_actions": [
             "What would you like to start off with?\n{actions}"
         ],
-        "start_turn": [
+        "player_start_turn": [
             "{name}, it is thy turn"
+        ],
+        "enemy_start_turn": [
+            "It is {name}'s turn to act."
         ],
         "select_action": [
             "What action doest though wish to take?\n{actions}"
@@ -32,13 +37,30 @@
         "select_target": [
             "Who wouldst thou like to target with that attack?\n{enemies}"
         ],
+        "takes_action": [
+            "{name} has used {action_name}"
+        ],
         "take_damage": [
             "{name} hath had inflicted upon them {dmg} damage",
             "{name} suffered {dmg} damage"
         ],
+        "dies": [
+            "{name} has had their life force reduced to nothing",
+            "{name} has been obliterated"
+        ],
+        "recieve_effect": [
+            "{name} is maladied with {effect}",
+            "{name} is suffering of {effect}"
+        ],
+        "action_skipped": [
+            "{name} is too busy with {effect} to take an action"
+        ],
         "output_stats": [
             "{name} hath {hp} candles left lit, and {mana} components of essence remaining",
             "to {name} remains {hp} health and {mana} mana"
+        ],
+        "output_effects": [
+            "{name} is afflicted with:\n{effects}"
         ],
         "level_up": [
             "Congratulations, {name}, thy hast levelled up to level {level}"

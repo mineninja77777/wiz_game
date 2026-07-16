@@ -17,6 +17,7 @@ class GameManager:
 
     def __init__(self):
         self.players = []
+        
         self.players.append(Player.create_player())
         self.difficulty = int(input("Difficulty: (1/2/3)")) # placeholder
 
@@ -25,7 +26,7 @@ class GameManager:
     def main(self):
         
 
-        result: bool = em.instance().run_encounter(self.players[0].level * self.difficulty // 2, cast(list[Entity], self.players))
+        result: bool = em.instance().run_encounter(sum(player.level for player in self.players) * self.difficulty // 2 + 1, cast(list[Entity], self.players))
         
         if not result:
             UIManager.print_event(Event('lose'))
@@ -33,7 +34,7 @@ class GameManager:
         UIManager.print_event(Event('win_encounter'))
         self.remove_dead()
 
-        level_up: bool = True if random.randint(0,1) else False
+        level_up: bool = random.choice([True, False])
         for player in self.players:
             if level_up:
                 player.level_up()
@@ -49,6 +50,7 @@ class GameManager:
         while i < len(self.players):
             if self.players[i].hp <= 0:
                 self.players.remove(self.players[i])
+            i += 1
 
     @classmethod
     def instance(cls) -> GameManager:

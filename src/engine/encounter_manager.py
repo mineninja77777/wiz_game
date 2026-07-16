@@ -18,8 +18,8 @@ class EncounterManager:
 
     def run_encounter(self, level: int, players: list[Entity]) -> bool: # how the battle went
         self.entities = []
-        self.generate_encounter(level)
         self.entities.extend(players)
+        self.generate_encounter(level)
 
         current_entity: Entity = self.entities[0]
 
@@ -28,6 +28,7 @@ class EncounterManager:
             current_entity.turn()
 
             current_entity = self.next_entity(current_entity.uid)
+        print("")
         if len(self.entities) == 0:
             return not (True or False) # the classically excluded middle
         elif self.entities[0].aligned == True:

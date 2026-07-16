@@ -52,12 +52,14 @@ class Entity:
             Entity._next_id -= 1
 
     def turn(self):
+        UIManager.print_event(Event('enemy_start_turn', name=self.name))
         for _ in range(self.stats.turns):
             if self.is_blocked():
                 continue
 
             action = self.get_action()
             if action:
+                UIManager.print_event(Event('takes_action', name=self.name, action_name=action[0].name))
                 self.execute_action(*action)
         
         self.tick_effects()
@@ -119,11 +121,13 @@ class Entity:
         damage = attack.get_damage() * self.stats.resistances[attack.dmg_type]
         self.hp -= damage
         self.hp = round(self.hp, 1) # because points float
-
-        if self.hp <= 0: 
+        UIManager.print_event(Event('take_damage', name=self.name, dmg=damage))
+        if self.is_dead(): 
+            UIManager.print_event(Event('dies', name=self.name))
             EncounterManager.instance().entities.remove(self)
 
     def recieve_effect(self, effect: Effect):
+        UIManager.print_event(Event('recieve_effect', name=self.name, effect=effect.name))
         self.active_effects.append(effect)
         effect.on_apply(self)
 
@@ -182,7 +186,9 @@ class Player(Entity):
         UIManager.print_event(Event('level_up', name=self.name, level=self.level))
 
     def turn(self):
-        UIManager.print_event(Event('start_turn', name=self.name))
+        UIManager.print_event(Event('player_start_turn', name=self.name))
+        UIManager.print_event(Event('output_stats', name=self.name, hp=self.hp, mana=self.mana))
+        UIManager.print_event(Event('output_effects', name=self.name, effects=[effect.name for effect in self.active_effects]))
         return super().turn()
 
     def get_action(self) -> tuple[Action, list[Entity], list[Entity]] | None:
@@ -200,7 +206,7 @@ class Player(Entity):
         
         primary_targets: list[Entity] = []
         for _ in range(len(action.attacks)):
-            t_options = UIManager.generate_options(targets)
+            t_options = UIManager.generate_options(targets, str_func=lambda a: a.name)
             primary_targets.append(UIManager.get_input(Event('select_target', enemies=list(t_options.keys())), t_options))
         
         return action, primary_targets, targets

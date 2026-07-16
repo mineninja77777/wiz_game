@@ -15,7 +15,7 @@ class UIManager:
         raise Exception("nope")
 
     @classmethod
-    def print_event(cls, event: Event) -> None:
+    def print_event(cls, event: Event, new_line: bool = True) -> None:
         # json structure for prints is name: [possible msgs]
         a = cls.data()
         msg: str = random.choice(cls.data()[event.kind])
@@ -25,6 +25,8 @@ class UIManager:
                 continue
             msg = msg.replace('{' + name + '}', "\n".join([str(va) for va in val]))
         print(msg)
+        if new_line:
+            print("")
     
     @classmethod
     @overload
@@ -36,14 +38,14 @@ class UIManager:
 
     @classmethod
     def get_input[T](cls, event: Event, options: dict[str, T] | None = None) -> T | str:
-        cls.print_event(event)
+        cls.print_event(event, new_line=False)
         user_input: str = input()
         if options is None:
             return user_input
         while user_input not in options.keys():
-            cls.print_event(Event('invalid_input'))
+            cls.print_event(Event('invalid_input'), new_line=False)
             user_input = input()
-        
+        print("")
         return options[user_input]
     
     @staticmethod
