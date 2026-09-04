@@ -16,7 +16,7 @@ class UIManager:
 
     @classmethod
     def print_event(cls, event: Event, new_line: bool = True) -> None:
-        # json structure for prints is name: [possible msgs]
+        
         a = cls.data()
         msg: str = random.choice(cls.data()[event.kind])
         for name, val in event.params.items():
@@ -57,7 +57,7 @@ class UIManager:
     @classmethod
     def data(cls) -> dict[str, list[str]]:
         if cls._data is None:
-            text = json.load(open(os.path.abspath("src/instances/text.JSON")))
+            text = json.load(open(os.path.abspath("src/instances/dialogue.JSON")))
             cls._data = text["events"]
             return text["events"]
         return cls._data
