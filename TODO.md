@@ -6,7 +6,7 @@ reorganise how instances work
 3. start by doing this to the already existing text system
     ~~- decide how to structure text.json~~
     ~~- structure it that way~~
-    - sort out meta.py
+    ~~- sort out meta.py~~
     - sort out the other ui.py
     - change how the stats works
 4. then sort out weapons, spells, and others
