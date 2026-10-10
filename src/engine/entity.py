@@ -188,7 +188,8 @@ class Player(Entity):
     def turn(self):
         UIManager.print_event(Event('player_start_turn', name=self.name))
         UIManager.print_event(Event('output_stats', name=self.name, hp=self.hp, mana=self.mana))
-        UIManager.print_event(Event('output_effects', name=self.name, effects=[effect.name for effect in self.active_effects]))
+        if len(self.active_effects) > 0:
+            UIManager.print_event(Event('output_effects', name=self.name, effects=[effect.name for effect in self.active_effects]))
         return super().turn()
 
     def get_action(self) -> tuple[Action, list[Entity], list[Entity]] | None:

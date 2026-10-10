@@ -24,7 +24,7 @@
         "select_class": {
             "function": "choose_random",
             "params": [
-                "What occupation have you?\n{classes}",
+                "What occupation have ye?\n{classes}",
                 "Which path draws your focus?\n{classes}"
             ]
         },
