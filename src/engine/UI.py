@@ -27,7 +27,7 @@ class UIManager:
                 raise KeyError(f"JSON is poorly structured in dialogue.JSON, under {event.kind}")
 
             # doing everything ever
-            msg = dialogue_funcs_registry[UIManager.replace_in_str(event_data["function"], event.params)](UIManager.traverse_and_replace(event_data["params"], event.params))
+            msg = dialogue_funcs_registry[UIManager.replace_in_str(event_data["function"], event.params)](*UIManager.traverse_and_replace(event_data["params"], event.params))
 
         msg = UIManager.replace_in_str(msg, event.params)
         print(msg)

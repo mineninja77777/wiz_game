@@ -187,7 +187,7 @@ class Player(Entity):
 
     def turn(self):
         UIManager.print_event(Event('player_start_turn', name=self.name))
-        UIManager.print_event(Event('output_stats', name=self.name, hp=self.hp, mana=self.mana))
+        UIManager.print_event(Event('output_stats', name=self.name, hp=self.hp, mana=self.mana, max_hp=self.stats.max_hp, max_mana=self.stats.max_mana))
         if len(self.active_effects) > 0:
             UIManager.print_event(Event('output_effects', name=self.name, effects=[effect.name for effect in self.active_effects]))
         return super().turn()

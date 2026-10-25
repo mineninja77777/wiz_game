@@ -6,7 +6,9 @@
         "level": "int",
         "dmg": "float",
         "hp": "float",
+        "max_hp": "float",
         "mana": "float",
+        "max_mana": "float",
         "actions": "list[str]",
         "upgrades": "list[str]",
         "classes": "list[str]",
@@ -57,10 +59,12 @@
         },
         "action_skipped": "{name} is too busy with {effect} to take an action",
         "output_stats": {
-            "function": "choose_random",
+            "function": "conditional_pick",
             "params": [
-                "{name} hath {hp} candles left lit, and {mana} components of essence remaining",
-                "to {name} remains {hp} health and {mana} mana"
+                {"{mana} == {max_mana} && {hp} == {max_hp}": "{name} art brimming with both health and essence"},
+                {"{hp} == {max_hp}": "{name} is in top physique, yet has only {mana} of {max_mana} drops of aether"},
+                {"{mana} == {max_mana}": "{name} be o'erbrimm'n' in arcana yet has been crippl'd to {hp}/{max_hp} strengths"},
+                {"default": "{hp}/{max_hp} hp, {mana}/{max_mana} mana"}
             ]
         },
         "output_effects": "{name} is afflicted with:\n{effects}",
