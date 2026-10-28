@@ -10,7 +10,7 @@ reorganise how instances work
     - ~~sort function registry~~
     - ~~sort out the other ui.py~~
     - ~~change how the stats works~~
-    - change stuff so that if dialogue.json changes params then the engine won't fail
+    - ~~change stuff so that if dialogue.json changes params then the engine won't fail~~
     - generally improve the dialogues
 4. then sort out weapons, spells, and others
 5. then entities
